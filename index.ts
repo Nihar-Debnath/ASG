@@ -7,24 +7,27 @@ const numCPUs = os.cpus().length;
 if (cluster.isPrimary) {
     console.log(`Master ${process.pid} is running`);
 
-    // Fork workers.
     for (let i = 0; i < numCPUs; i++) {
         cluster.fork();
     }
 } else {
     app.get("/", (req, res) => {
-        res.send("Hello World");
+        res.send("Hello user");
+    });
+
+    app.get("/healthcheck", (req, res) => {
+        res.send("The server is working fine");
     });
 
     app.get("/cpu", (req, res) => {
         for (let i = 0; i < 1000000000; i++) {
             Math.random();
         }
-        res.send("Hello cpu: "+process.pid);
+        res.send("Hello cpu");
     });
 
     app.get("/host", (req, res) => {
-        res.send(os.hostname() + " Woker id: " + process.pid);
+        res.send("Hostname: "+os.hostname() + " Woker id: " + process.pid);
     });
 
     app.listen(3000, () => {
